@@ -2,6 +2,18 @@ module RailsPerformance
   module Reports
     class ResourcesReport < BaseReport
       def data
+        pp "Collect"
+        pp db.data.collect { |e| e.record_hash }
+
+        pp "Grouped"
+        pp db.data.collect { |e| e.record_hash }
+                 .group_by { |e| e[:server] + "///" + e[:context] + "///" + e[:role] }
+
+        pp "Transformed"
+        pp db.data.collect { |e| e.record_hash }
+                 .group_by { |e| e[:server] + "///" + e[:context] + "///" + e[:role] }
+                 .transform_values { |v| v.map { |e| e.merge({ datetimei: e[:datetimei].to_i }) } }
+
         @data ||= db.data.collect { |e| e.record_hash }
                          .group_by { |e| e[:server] + "///" + e[:context] + "///" + e[:role] }
                          .transform_values { |v| v.map { |e| e.merge({ datetimei: e[:datetimei].to_i }) } }
